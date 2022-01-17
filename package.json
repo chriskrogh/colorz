@@ -1,0 +1,28 @@
+{
+  "name": "colorz",
+  "private": true,
+  "scripts": {
+    "build": "yarn workspace @colorz/blockchain compile && yarn workspace @colorz/app build"
+  },
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ],
+    "nohoist": [
+      "**/@nomiclabs/**",
+      "**/ts-node",
+      "**/@typechain/**"
+    ]
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.8.0",
+    "@typescript-eslint/parser": "^5.8.0",
+    "eslint": "^8.5.0",
+    "eslint-config-next": "^12.0.7",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-simple-import-sort": "^7.0.0",
+    "prettier": "^2.5.1",
+    "typescript": "^4.5.4"
+  }
+}

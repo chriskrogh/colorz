@@ -1,0 +1,27 @@
+{
+  "folders": [
+    {
+      "name": "root",
+      "path": "."
+    },
+    {
+      "name": "app",
+      "path": "./packages/app"
+    },
+    {
+      "name": "blockchain",
+      "path": "./packages/blockchain"
+    }
+  ],
+  "settings": {
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "javascript.validate.enable": false,
+    "editor.formatOnSave": true,
+    "eslint.workingDirectories": [
+      "./packages/blockchain/scripts",
+      "./packages/blockchain/test",
+      "./packages/app/pages",
+      "./packages/app/src"
+    ]
+  }
+}
