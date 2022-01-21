@@ -16,7 +16,7 @@ const Home: NextPage = () => {
         <title>Colorz</title>
         <meta
           name="description"
-          content="Colorz is a random color NFT generator. It mints a random color as an NFT to the user's address."
+          content="Colorz is a random color NFT generator. It mints random colors as NFTs to the user's address."
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
