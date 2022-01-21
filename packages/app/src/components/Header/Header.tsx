@@ -37,17 +37,17 @@ const Header: React.FC = () => {
 
   const [isOnSupportedNetwork, setIsOnSupportedNetwork] = useState(
     typeof window !== 'undefined' &&
-      window.ethereum?.networkVersion &&
+      (window as any).ethereum?.networkVersion &&
       EthereumChain.chainId ===
-        `0x${parseInt(window.ethereum.networkVersion).toString(16)}`,
+        `0x${parseInt((window as any).ethereum.networkVersion).toString(16)}`,
   );
 
   const isOnAboutPage = pathname === '/about';
 
   const handleSwitchNetwork = async () => {
-    if (typeof window !== 'undefined' && window.ethereum) {
+    if (typeof window !== 'undefined' && (window as any).ethereum) {
       try {
-        await window.ethereum.request({
+        await (window as any).ethereum.request({
           method: 'wallet_switchEthereumChain',
           params: [{ chainId: EthereumChain.chainId }],
         });
@@ -56,7 +56,7 @@ const Header: React.FC = () => {
         // This error code indicates that the chain has not been added to MetaMask.
         if (switchError.code === 4902) {
           try {
-            await window.ethereum.request({
+            await (window as any).ethereum.request({
               method: 'wallet_addEthereumChain',
               params: [EthereumChain],
             });

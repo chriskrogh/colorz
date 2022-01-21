@@ -7,9 +7,11 @@ const Provider: React.FC = ({ children }) => {
 
   useEffect(() => {
     (async () => {
-      if (typeof window !== 'undefined' && window.ethereum) {
-        await window.ethereum.request({ method: 'eth_requestAccounts' });
-        setAddress(window.ethereum.selectedAddress);
+      if (typeof window !== 'undefined' && (window as any).ethereum) {
+        await (window as any).ethereum.request({
+          method: 'eth_requestAccounts',
+        });
+        setAddress((window as any).ethereum.selectedAddress);
       }
     })();
   });
