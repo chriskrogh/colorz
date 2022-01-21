@@ -1,3 +1,4 @@
+import { expect } from 'chai';
 import { ethers } from 'hardhat';
 
 import { Color, Color__factory } from '../generated';
@@ -16,5 +17,12 @@ describe('Color', function () {
       '1',
     );
     await color.deployed();
+  });
+
+  it('should generate a hex color from a big number', async function () {
+    const hex = await color.uintToHexes('123456789123456789');
+    expect(hex).to.have.lengthOf(2);
+    expect(hex[0]).to.equal('1B69B4');
+    expect(hex[1]).to.equal('BACD05');
   });
 });
