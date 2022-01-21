@@ -21,11 +21,10 @@ contract Color is ERC721, VRFConsumerBase {
     string memory _symbol,
     address _vrfCoordinator,
     address _link,
-    bytes32 _keyHash,
-    uint256 _fee
+    bytes32 _keyHash
   ) ERC721(_name, _symbol) VRFConsumerBase(_vrfCoordinator, _link) {
     keyHash = _keyHash;
-    fee = _fee;
+    fee = 0.1 * 10 ** 18;
   }
 
   function substring(string memory str, uint startIndex, uint endIndex) private pure returns (string memory) {

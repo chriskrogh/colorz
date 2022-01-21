@@ -5,6 +5,8 @@
 // Runtime Environment's members available in the global scope.
 import { ethers } from 'hardhat';
 
+import { Color__factory } from '../generated';
+
 async function main() {
   // Hardhat always runs the compile task when running scripts with its command
   // line interface.
@@ -14,12 +16,18 @@ async function main() {
   // await hre.run('compile');
 
   // We get the contract to deploy
-  const Token = await ethers.getContractFactory('Token');
-  const token = await Token.deploy('Trinidad and Tobago Dollar Coin', 'TTDC');
+  const Color = (await ethers.getContractFactory('Color')) as Color__factory;
+  const color = await Color.deploy(
+    'Color',
+    'COLOR',
+    process.env.VRF_COORDINATOR_ADDRESS ?? '',
+    process.env.LINK_TOKEN_ADDRESS ?? '',
+    process.env.KEY_HASH ?? '',
+  );
 
-  await token.deployed();
+  await color.deployed();
 
-  console.log('Token deployed to:', token.address);
+  console.log('Color deployed to:', color.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
