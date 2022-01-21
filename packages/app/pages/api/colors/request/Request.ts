@@ -1,13 +1,12 @@
 import { ethers } from 'ethers';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-import TokenArtifact from '../../../../../blockchain/artifacts/contracts/Token.sol/Token.json';
-import { Token as TokenContract } from '../../../../../blockchain/generated/Token';
+import ColorArtifact from '../../../../../blockchain/artifacts/contracts/Color.sol/Color.json';
+import { Color as ColorContract } from '../../../../../blockchain/generated/Color';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   try {
-    const { address, amount } = req.query;
-    const formattedAmount = ethers.utils.parseEther(amount.toString());
+    const { address } = req.query;
 
     const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_URL);
     const wallet = new ethers.Wallet(
@@ -16,15 +15,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     );
 
     const contract = new ethers.Contract(
-      process.env.NEXT_PUBLIC_TOKEN_CONTRACT_ADDRESS ?? '',
-      TokenArtifact.abi,
+      process.env.NEXT_PUBLIC_COLOR_CONTRACT_ADDRESS ?? '',
+      ColorArtifact.abi,
       wallet,
-    ) as TokenContract;
+    ) as ColorContract;
 
-    const mintTransaction = await contract.mint(
-      address as string,
-      formattedAmount,
-    );
+    const mintTransaction = await contract.requestColors(address as string);
     await mintTransaction.wait();
     res.send({ success: true });
   } catch (error) {
