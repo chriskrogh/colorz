@@ -3,16 +3,18 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@chainlink/contracts/src/v0.8/VRFConsumerBase.sol";
+import "hardhat/console.sol";
 
 contract Color is ERC721, VRFConsumerBase {
   bytes32 internal keyHash;
   uint256 internal fee;
 
-  mapping(address => uint256[]) private colors;
+  string[] public colors;
+  mapping(string => address) public colorOwners;
   mapping(bytes32 => address) private requests;
 
-  event ColorRequested(bytes32 indexed requestId, address indexed minter);
-  event ColorCreated(bytes32 indexed requestId, uint256 indexed color);
+  event ColorsRequested(bytes32 indexed requestId, address indexed minter);
+  event ColorCreated(bytes32 indexed requestId, string indexed color);
 
   constructor(
     string memory _name,
@@ -26,51 +28,74 @@ contract Color is ERC721, VRFConsumerBase {
     fee = _fee;
   }
 
-  function requestColor() public {
+  function substring(string memory str, uint startIndex, uint endIndex) private pure returns (string memory) {
+    bytes memory strBytes = bytes(str);
+    bytes memory result = new bytes(endIndex-startIndex);
+    for(uint i = startIndex; i < endIndex; i++) {
+      result[i-startIndex] = strBytes[i];
+    }
+    return string(result);
+  }
+
+  function uintToHexes(uint256 num) public pure returns (string[] memory) {
+    // if the num is 0, return an empty array
+    if (num == 0) return new string[](0);
+
+    // determine the hexadecimal length of the num
+    uint256 i = num;
+    uint length = 0;
+    while (i != 0) {
+      length++;
+      i = i >> 4;
+    }
+
+    // convert the num to hexadecimal
+    uint mask = 15;
+    uint j = length;
+    bytes memory bstr = new bytes(length);
+    while (num != 0) {
+      uint curr = (num & mask);
+      bstr[--j] = curr > 9 ?
+        bytes1(uint8(55 + curr)) :
+        bytes1(uint8(48 + curr));
+      num = num >> 4;
+    }
+    string memory longHex = string(bstr);
+
+    // split the hexadecimal into groups of 6
+    uint k = 0;
+    uint numHexes = length / 6;
+    string[] memory hexes = new string[](numHexes);
+    while(k < numHexes) {
+      uint base = k * 6;
+      hexes[k++] = substring(longHex, base, base + 6);
+    }
+    return hexes;
+  }
+
+  function requestColors(address owner) public {
     require(LINK.balanceOf(address(this)) >= fee, "Not enough LINK - fill contract with faucet");
 
     bytes32 requestId = requestRandomness(keyHash, fee);
-    requests[requestId] = msg.sender;
+    requests[requestId] = owner;
 
-    emit ColorRequested(requestId, msg.sender);
+    emit ColorsRequested(requestId, owner);
   }
 
   function fulfillRandomness(bytes32 requestId, uint256 randomness) internal override {
-    colors[requests[requestId]].push(randomness);
-    _mint(requests[requestId], randomness);
+    string[] memory hexes = uintToHexes(randomness);
+    for(uint i = 0; i < hexes.length; i++) {
+      if (colorOwners[hexes[i]] == address(0)) {
+        // add color to mapping
+        colors.push(hexes[i]);
+        colorOwners[hexes[i]] = requests[requestId];
 
-    emit ColorCreated(requestId, randomness);
-  }
+        // mint color
+        _mint(requests[requestId], colors.length - 1);
 
-  function uintToHex(uint256 color) private pure returns (string memory) {
-    if (color == 0) return "0";
-
-    uint256 j = color;
-    uint length = 0;
-    while (j != 0) {
-      length++;
-      j = j >> 4;
+        // emit event
+        emit ColorCreated(requestId, hexes[i]);
+      }
     }
-
-    uint mask = 15;
-    bytes memory bstr = new bytes(length);
-    uint k = length;
-    while (color != 0) {
-      uint curr = (color & mask);
-      bstr[--k] = curr > 9 ?
-        bytes1(uint8(55 + curr)) :
-        bytes1(uint8(48 + curr));
-      color = color >> 4;
-    }
-
-    return string(bstr);
-  }
-
-  function getColors(address owner) public view returns (string[] memory) {
-    string[] memory result = new string[](colors[owner].length);
-    for (uint i = 0; i < colors[owner].length; i++) {
-      result[i] = uintToHex(colors[owner][i]);
-    }
-    return result;
   }
 }
