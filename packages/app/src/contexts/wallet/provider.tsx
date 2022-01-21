@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { WalletContext } from './state';
 
 const Provider: React.FC = ({ children }) => {
-  const [address, setAddress] = useState<string>('');
+  const [address, setAddress] = useState<string | undefined>();
 
   useEffect(() => {
     (async () => {
