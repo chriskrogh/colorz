@@ -1,8 +1,9 @@
 import type { NextPage } from 'next';
 import styled from 'styled-components';
 
+import Button from '../../src/components/Button';
 import Column from '../../src/components/Column';
-import ExchangeCard from '../../src/components/ExchangeCard';
+import Row from '../../src/components/Row';
 import Spacer from '../../src/components/Spacer';
 import Typography from '../../src/components/Typography';
 
@@ -14,15 +15,10 @@ const Container = styled(Column)`
 const Mobile: NextPage = () => {
   return (
     <Container alignItems="center">
-      <Typography as="h1" center>
-        Crypto for the Caribbean
-      </Typography>
-      <Spacer height={16} />
-      <Typography as="h5" center>
-        Buy and sell crypto using your local currency.
-      </Typography>
-      <Spacer height={32} />
-      <ExchangeCard />
+      <Row justifyContent="space-between" alignItems="center" fullWidth>
+        <Typography as="h3">Your colors</Typography>
+        <Button>Mint</Button>
+      </Row>
       <Spacer height={32} />
     </Container>
   );

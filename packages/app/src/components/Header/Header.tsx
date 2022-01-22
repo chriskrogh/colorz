@@ -79,7 +79,7 @@ const Header: React.FC = () => {
       <Link href="/">
         <LogoContainer>
           <Image
-            src="/assets/palm-tree-small.png"
+            src="/assets/colorz-small.png"
             width={IMAGE_SIZE}
             height={IMAGE_SIZE}
             alt="Palm tree"
