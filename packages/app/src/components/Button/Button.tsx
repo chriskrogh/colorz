@@ -13,7 +13,7 @@ const Container = styled.button<ContainerProps>`
   margin: 0;
   padding: 8px 16px;
   background-color: ${({ secondary }) =>
-    secondary ? 'rgba(0, 0, 0, 0.12)' : COLORS.primary};
+    secondary ? 'rgba(0, 0, 0, 0.3)' : COLORS.primary};
   border-radius: 8px;
   cursor: pointer;
   width: ${({ fullWidth }) => (fullWidth ? '100%' : 'auto')};

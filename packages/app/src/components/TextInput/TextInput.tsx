@@ -10,7 +10,7 @@ const Container = styled.div<ContainerProps>`
   display: flex;
   flex-flow: column;
   padding: 8px 16px;
-  background-color: rgba(0, 0, 0, 0.12);
+  background-color: rgba(0, 0, 0, 0.3);
   border-radius: 8px;
   width: ${({ fullWidth }) =>
     fullWidth ? `calc(100% - ${SIDE_PADDING * 2}px)` : 'auto'};
@@ -20,7 +20,7 @@ const Input = styled.input`
   border: none;
   background: none;
   margin: 0;
-  color: ${({ disabled }) => (disabled ? 'rgba(0, 0, 0, 0.5)' : 'black')};
+  color: ${({ disabled }) => (disabled ? 'rgba(0, 0, 0, 0.5)' : 'white')};
 
   // from p
   font-family: Jost;

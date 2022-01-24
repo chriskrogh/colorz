@@ -9,7 +9,7 @@ type Props = {
 
 const Typography = styled.span<Props>`
   color: ${({ color, secondary }) =>
-    secondary ? 'rgba(255, 255, 255, 0.5)' : color ? color : 'black'};
+    secondary ? 'rgba(0, 0, 0, 0.5)' : color ? color : 'black'};
   margin: 0;
   border-bottom: ${({ underline }) => (underline ? '1px solid black' : '')};
   text-align: ${({ center }) => (center ? 'center' : '')};

@@ -1,9 +1,10 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 
+import { ChainContext } from '../../contexts/chain';
 import EthereumChain from '../../utils/EthereumChain';
 import { useIsMobile } from '../../utils/isMobile';
 import Button from '../Button';
@@ -31,16 +32,11 @@ const LogoContainer = styled.button`
 `;
 
 const Header: React.FC = () => {
+  const { isOnSupportedChain } = useContext(ChainContext);
+
   const isMobile = useIsMobile();
 
   const { pathname } = useRouter();
-
-  const [isOnSupportedNetwork, setIsOnSupportedNetwork] = useState(
-    typeof window !== 'undefined' &&
-      (window as any).ethereum?.networkVersion &&
-      EthereumChain.chainId ===
-        `0x${parseInt((window as any).ethereum.networkVersion).toString(16)}`,
-  );
 
   const isOnAboutPage = pathname === '/about';
 
@@ -51,7 +47,6 @@ const Header: React.FC = () => {
           method: 'wallet_switchEthereumChain',
           params: [{ chainId: EthereumChain.chainId }],
         });
-        setIsOnSupportedNetwork(true);
       } catch (switchError: any) {
         // This error code indicates that the chain has not been added to MetaMask.
         if (switchError.code === 4902) {
@@ -60,7 +55,6 @@ const Header: React.FC = () => {
               method: 'wallet_addEthereumChain',
               params: [EthereumChain],
             });
-            setIsOnSupportedNetwork(true);
           } catch (addError) {
             console.error('Error adding Ethereum chain to MetaMask', addError);
           }
@@ -98,7 +92,7 @@ const Header: React.FC = () => {
             About
           </Typography>
         </Link>
-        {!isMobile && !isOnSupportedNetwork && (
+        {!isMobile && !isOnSupportedChain && (
           <>
             <Spacer width={16} />
             <Button onClick={handleSwitchNetwork} secondary>

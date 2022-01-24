@@ -26,7 +26,7 @@ const About: NextPage = () => {
           <Typography as="p">
             by <a href="https://chriskrogh.com">Chris Krogh</a>
           </Typography>
-          <Typography as="p">29th December, 2021</Typography>
+          <Typography as="p">24th January, 2021</Typography>
           <Spacer height={16} />
           <Typography as="h4" secondary>
             Background & Motivation
@@ -43,7 +43,7 @@ const About: NextPage = () => {
           <Typography as="p">
             I think it would be pretty cool to get a job in the industry, so I
             decided to get some experience with the relevant tools and
-            frameworks (Solidity, Hardhat, Ethers JS) by building my first Dapp,
+            frameworks (Solidity, Hardhat, Ethers JS) by building Dapps, like
             Colorz.
           </Typography>
           <Spacer height={16} />
@@ -52,10 +52,15 @@ const About: NextPage = () => {
           </Typography>
           <Spacer height={8} />
           <Typography as="p">
-            Colorz is a fiat on/off ramp project that facilitates "buying" and
-            "selling" ERC20 tokens on the Polygon blockchain. When tokens are
-            "bought", they are minted to the specified wallet address and when
-            they are "sold", they are burned from the wallet address.
+            Colorz is a really simple Dapp that allows users to mint colors as
+            NFTs to the blockchain. I initially started off by trying to mint
+            random colors using{' '}
+            <a href="https://docs.chain.link/docs/get-a-random-number/">
+              Chainlink VRF
+            </a>{' '}
+            but I encountered some issues with running chainlink locally which
+            made it really hard to test the smart contracts. Eventually I
+            decided to allow users to mint their own colors.
           </Typography>
           <Spacer height={16} />
           <Typography as="h4" secondary>
@@ -68,17 +73,6 @@ const About: NextPage = () => {
             processed. To add the network to your wallet, you can head over to{' '}
             <a href="https://chainlist.org/">Chainlist</a>, search for "mumbai"
             and add the Polygon test network.
-          </Typography>
-          <Spacer height={16} />
-          <Typography as="h4" secondary>
-            Plans for the future
-          </Typography>
-          <Spacer height={8} />
-          <Typography as="p">
-            The goal of this project was just to get more experience interacting
-            with smart contracts, however since there aren't many fiat on/off
-            ramps that accept local Caribbean currencies, there could be some
-            launch potential. Will probably look into, but not right now.
           </Typography>
           <Spacer height={32} />
         </Container>

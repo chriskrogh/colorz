@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 
 import ColorArtifact from '../../../blockchain/artifacts/contracts/Color.sol/Color.json';
 import { Color as ColorContract } from '../../../blockchain/generated/Color';
+import { ChainContext } from '../contexts/chain';
 import { WalletContext } from '../contexts/wallet';
 
 export const SUCCESS_TIMEOUT = 5000;
@@ -18,13 +19,14 @@ const buildColorContract = (
   ) as ColorContract;
 
 type HookReturn = {
-  requestColors: () => Promise<void>;
+  mintColor: (color: string) => Promise<void>;
   colors: string[];
   loading: boolean;
   success: boolean;
 };
 
 export const useColorContract = (): HookReturn => {
+  const { isOnSupportedChain } = useContext(ChainContext);
   const { address } = useContext(WalletContext);
 
   const [colors, setColors] = useState<string[]>([]);
@@ -33,30 +35,22 @@ export const useColorContract = (): HookReturn => {
 
   useEffect(() => {
     (async () => {
-      if (address) {
+      if (isOnSupportedChain && address) {
         const provider = new ethers.providers.Web3Provider(
           (window as any).ethereum,
         );
         const contract = buildColorContract(provider);
-        const balance = (await contract.balanceOf(address)).toNumber();
-        console.log(balance);
-
-        const filter = contract.filters.ColorCreated(address);
-        provider.on(filter, (log, event) => {
-          console.log(log, event);
-        });
+        const supply = (await contract.supply()).toNumber();
+        const colors = [];
+        for (let i = 0; i < supply; i++) {
+          colors.push(await contract.colors(i));
+        }
+        setColors(colors);
       }
     })();
-  }, [address]);
+  }, [isOnSupportedChain, address]);
 
-  const handleSuccess = () => {
-    setSuccess(true);
-    setTimeout(() => {
-      setSuccess(false);
-    }, SUCCESS_TIMEOUT);
-  };
-
-  const requestColors = async () => {
+  const mintColor = async (color: string) => {
     setLoading(true);
     try {
       if (address) {
@@ -64,9 +58,13 @@ export const useColorContract = (): HookReturn => {
           (window as any).ethereum,
         );
         const contract = buildColorContract(provider);
-        const request = await contract.requestColors(address);
+        const request = await contract.mint(color);
         await request.wait();
-        handleSuccess();
+        setColors([...colors, color]);
+        setSuccess(true);
+        setTimeout(() => {
+          setSuccess(false);
+        }, SUCCESS_TIMEOUT);
       }
     } catch (error) {
       console.error(error);
@@ -75,7 +73,7 @@ export const useColorContract = (): HookReturn => {
   };
 
   return {
-    requestColors,
+    mintColor,
     colors,
     loading,
     success,

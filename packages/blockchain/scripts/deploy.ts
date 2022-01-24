@@ -17,13 +17,7 @@ async function main() {
 
   // We get the contract to deploy
   const Color = (await ethers.getContractFactory('Color')) as Color__factory;
-  const color = await Color.deploy(
-    'Color',
-    'COLOR',
-    process.env.VRF_COORDINATOR_ADDRESS ?? '',
-    process.env.LINK_TOKEN_ADDRESS ?? '',
-    process.env.KEY_HASH ?? '',
-  );
+  const color = await Color.deploy();
 
   await color.deployed();
 

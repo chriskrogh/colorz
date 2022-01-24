@@ -23,7 +23,7 @@ input[type='number'] {
   display: flex;
   flex-flow: column;
   padding: 8px 16px;
-  background-color: rgba(0, 0, 0, 0.12);
+  background-color: rgba(0, 0, 0, 0.3);
   border-radius: 8px;
 }
 

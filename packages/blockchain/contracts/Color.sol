@@ -2,109 +2,25 @@
 pragma solidity ^0.8.0;
 
 import '@openzeppelin/contracts/token/ERC721/ERC721.sol';
-import '@chainlink/contracts/src/v0.8/VRFConsumerBase.sol';
-import 'hardhat/console.sol';
 
-contract Color is ERC721, VRFConsumerBase {
-    bytes32 internal keyHash;
-    uint256 internal fee;
+contract Color is ERC721 {
+  uint public supply;
+  string[] public colors;
+  mapping(string => bool) _colorExists;
 
-    string[] public colors;
-    mapping(string => address) public colorOwners;
-    mapping(bytes32 => address) private requests;
+  constructor() ERC721("Color", "COLOR") {
+    supply = 0;
+  }
 
-    event ColorsRequested(bytes32 indexed requestId, address indexed minter);
-    event ColorCreated(bytes32 indexed requestId, string indexed color);
+  function mint(string memory _color) public {
+    require(!_colorExists[_color], 'Color already exists');
 
-    constructor(
-        string memory _name,
-        string memory _symbol,
-        address _vrfCoordinator,
-        address _link,
-        bytes32 _keyHash
-    ) ERC721(_name, _symbol) VRFConsumerBase(_vrfCoordinator, _link) {
-        keyHash = _keyHash;
-        fee = 0.1 * 10**18;
-    }
+    colors.push(_color);
+    supply = colors.length;
+    uint _id = supply;
 
-    function substring(
-        string memory str,
-        uint256 startIndex,
-        uint256 endIndex
-    ) private pure returns (string memory) {
-        bytes memory strBytes = bytes(str);
-        bytes memory result = new bytes(endIndex - startIndex);
-        for (uint256 i = startIndex; i < endIndex; i++) {
-            result[i - startIndex] = strBytes[i];
-        }
-        return string(result);
-    }
+    _mint(msg.sender, _id);
 
-    function uintToHexes(uint256 num) public pure returns (string[] memory) {
-        // if the num is 0, return an empty array
-        if (num == 0) return new string[](0);
-
-        // determine the hexadecimal length of the num
-        uint256 i = num;
-        uint256 length = 0;
-        while (i != 0) {
-            length++;
-            i = i >> 4;
-        }
-
-        // convert the num to hexadecimal
-        uint256 mask = 15;
-        uint256 j = length;
-        bytes memory bstr = new bytes(length);
-        while (num != 0) {
-            uint256 curr = (num & mask);
-            bstr[--j] = curr > 9
-                ? bytes1(uint8(55 + curr))
-                : bytes1(uint8(48 + curr));
-            num = num >> 4;
-        }
-        string memory longHex = string(bstr);
-
-        // split the hexadecimal into groups of 6
-        uint256 k = 0;
-        uint256 numHexes = length / 6;
-        string[] memory hexes = new string[](numHexes);
-        while (k < numHexes) {
-            uint256 base = k * 6;
-            hexes[k++] = substring(longHex, base, base + 6);
-        }
-        return hexes;
-    }
-
-    function requestColors(address owner) public {
-        require(
-            LINK.balanceOf(address(this)) >= fee,
-            'Not enough LINK - fill contract with faucet'
-        );
-
-        bytes32 requestId = requestRandomness(keyHash, fee);
-        requests[requestId] = owner;
-
-        emit ColorsRequested(requestId, owner);
-    }
-
-    function fulfillRandomness(bytes32 requestId, uint256 randomness)
-        internal
-        override
-    {
-        string[] memory hexes = uintToHexes(randomness);
-        for (uint256 i = 0; i < hexes.length; i++) {
-            if (colorOwners[hexes[i]] == address(0)) {
-                // add color to mapping
-                colors.push(hexes[i]);
-                colorOwners[hexes[i]] = requests[requestId];
-
-                // mint color
-                _mint(requests[requestId], colors.length - 1);
-
-                // emit event
-                emit ColorCreated(requestId, hexes[i]);
-            }
-        }
-    }
+    _colorExists[_color] = true;
+  }
 }
