@@ -17,6 +17,7 @@
     "typescript.tsdk": "node_modules/typescript/lib",
     "javascript.validate.enable": false,
     "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
     "eslint.workingDirectories": [
       "./packages/blockchain/scripts",
       "./packages/blockchain/test",
