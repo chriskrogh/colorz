@@ -2,9 +2,9 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import styled from 'styled-components';
 
-import Column from '../../src/components/Column';
-import Spacer from '../../src/components/Spacer';
-import Typography from '../../src/components/Typography';
+import Column from '../../components/Column';
+import Spacer from '../../components/Spacer';
+import Typography from '../../components/Typography';
 
 const Container = styled(Column)`
   width: min(calc(100% - 32px), 800px);
