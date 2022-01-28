@@ -95,9 +95,7 @@ const Header: React.FC = () => {
         {!isMobile && !isOnSupportedChain && (
           <>
             <Spacer width={16} />
-            <Button onClick={handleSwitchNetwork} secondary>
-              Switch network
-            </Button>
+            <Button onClick={handleSwitchNetwork}>Switch network</Button>
           </>
         )}
       </Row>
